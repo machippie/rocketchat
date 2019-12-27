@@ -1,0 +1,51 @@
+# Standards: 0.1
+---
+- name: Fact rocketchat user
+  set_fact:
+    rocketchat_user: "{{ rocketchat_user | default(homebrew_user) | default(ansible_user_id) }}"
+  tags:
+    - rocketchat
+
+- become: "{{ (rocketchat_user != ansible_user_id) | bool }}"
+  become_user: "{{ rocketchat_user }}"
+  block:
+    - name: Install required package
+      ignore_errors: True
+      homebrew_cask:
+        name: rocketchat
+        greedy: True
+        options: appdir=/Applications
+        accept_external_apps: False
+        state: upgraded
+      tags:
+        - rocketchat
+
+    - name: Remove quarantine flag
+      register: rocketchat_quarantine
+      failed_when: rocketchat_quarantine.rc != 0 and "No such xattr" not in rocketchat_quarantine.stderr
+      changed_when: rocketchat_quarantine.rc == 0
+      command: xattr -d com.apple.quarantine /Applications/Rocket.Chat.app
+      tags:
+        - rocketchat
+
+    - name: Install pidof package
+      homebrew:
+        name: pidof
+      tags:
+        - rocketchat
+
+    - name: Check program running
+      register: rocketchat_running
+      failed_when: False
+      changed_when: rocketchat_running.stdout | length > 0 | bool
+      command: pidof Rocket.Chat
+      tags:
+        - rocketchat
+
+    - name: Fact program running
+      set_fact:
+        rocketchat_started: "{{ rocketchat_running.stdout_lines | length > 0 | bool }}"
+      tags:
+        - rocketchat
+
+...
