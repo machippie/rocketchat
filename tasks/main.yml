@@ -28,23 +28,10 @@
       tags:
         - rocketchat
 
-    - name: Install pidof package
-      homebrew:
-        name: pidof
-      tags:
-        - rocketchat
-
-    - name: Check program running
-      register: rocketchat_running
-      failed_when: False
-      changed_when: rocketchat_running.stdout | length > 0 | bool
-      command: pidof Rocket.Chat
-      tags:
-        - rocketchat
-
-    - name: Fact program running
-      set_fact:
-        rocketchat_started: "{{ rocketchat_running.stdout_lines | length > 0 | bool }}"
+    - name: Start application
+      when: rocketchat_started
+      changed_when: False
+      command: open -j /Applications/Rocket.Chat.app
       tags:
         - rocketchat
 
