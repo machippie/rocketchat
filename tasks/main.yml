@@ -12,7 +12,7 @@
     - name: Install required package
       ignore_errors: True
       homebrew_cask:
-        name: rocketchat
+        name: rocket-chat
         greedy: True
         options: appdir=/Applications
         accept_external_apps: False
