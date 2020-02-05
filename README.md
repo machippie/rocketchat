@@ -1,6 +1,6 @@
 # rocketchat
 
-[![Build Status](https://cloud.drone.io/api/badges/machippie/rocketchat/status.svg)](https://cloud.drone.io/machippie/google-chrome)
+[![Build Status](https://cloud.drone.io/api/badges/machippie/rocketchat/status.svg)](https://cloud.drone.io/machippie/rocketchat)
 
 Ansible role to configure rocketchat.
 
